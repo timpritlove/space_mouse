@@ -1,0 +1,3 @@
+%{
+  "usb": {:hex, :usb, "0.2.1", "b44accc9aea593479324a7a41ee143f1ecc46f76f62e686431d92f7e8748773e", [:rebar3], [], "hexpm", "705224f3f3f2a440304c5c52d6a392bf533504c30326260af3fce10a75cc9c35"},
+}
