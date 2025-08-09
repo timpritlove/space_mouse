@@ -150,28 +150,36 @@ defmodule SpaceNavigator.UsbManager do
   end
 
   @impl true
-  def handle_call({:read_data, device, _endpoint, _length, _timeout}, _from, state) do
+  def handle_call({:read_data, device, endpoint, length, timeout}, _from, state) do
     case device.handle do
       nil ->
         {:reply, {:error, :device_not_open}, state}
       
-      _handle ->
-        # For now, return a placeholder - specific transfer functions need to be implemented
-        # based on the actual device requirements and available USB functions
-        {:reply, {:error, :not_implemented}, state}
+      handle ->
+        case :usb.read_interrupt(handle, endpoint, length, timeout) do
+          {:ok, data} ->
+            {:reply, {:ok, data}, state}
+          
+          {:error, reason} ->
+            {:reply, {:error, reason}, state}
+        end
     end
   end
 
   @impl true
-  def handle_call({:write_data, device, _endpoint, _data, _timeout}, _from, state) do
+  def handle_call({:write_data, device, endpoint, data, timeout}, _from, state) do
     case device.handle do
       nil ->
         {:reply, {:error, :device_not_open}, state}
       
-      _handle ->
-        # For now, return a placeholder - specific transfer functions need to be implemented
-        # based on the actual device requirements and available USB functions
-        {:reply, {:error, :not_implemented}, state}
+      handle ->
+        case :usb.write_interrupt(handle, endpoint, data, timeout) do
+          {:ok, bytes_written} ->
+            {:reply, {:ok, bytes_written}, state}
+          
+          {:error, reason} ->
+            {:reply, {:error, reason}, state}
+        end
     end
   end
 
