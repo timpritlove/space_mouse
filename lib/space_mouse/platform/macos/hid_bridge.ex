@@ -96,16 +96,30 @@ defmodule SpaceMouse.Platform.MacOS.HidBridge do
   # Private Implementation
 
   defp send_led_command_impl(state, command) do
-    case state.device_connected do
-      false ->
+    case {state.device_connected, state.port_manager} do
+      {false, _} ->
         {:error, :device_not_connected}
         
-      true ->
-        # For macOS IOKit implementation, LED control would need to be
-        # implemented in the C program or via separate USB control transfers
-        # For now, we'll simulate success
-        Logger.debug("LED command sent: #{command}")
-        :ok
+      {true, nil} ->
+        {:error, :port_manager_not_available}
+        
+      {true, port_manager} ->
+        # Send LED command to the C HID reader program
+        led_cmd = case command do
+          :on -> "LED:on"
+          :off -> "LED:off"
+          _ -> "LED:off"
+        end
+        
+        case PortManager.send_command(port_manager, led_cmd) do
+          :ok ->
+            Logger.debug("LED command sent: #{command}")
+            :ok
+            
+          {:error, reason} ->
+            Logger.error("Failed to send LED command: #{inspect(reason)}")
+            {:error, reason}
+        end
     end
   end
 end

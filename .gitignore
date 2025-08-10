@@ -21,3 +21,7 @@ space_mouse-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# Compiled platform-specific binaries
+priv/platform/*/hid_reader
+priv/platform/*/*/hid_reader

@@ -37,6 +37,13 @@ defmodule SpaceMouse.Platform.MacOS.PortManager do
     GenServer.stop(pid, :normal)
   end
 
+  @doc """
+  Send a command to the HID reader process.
+  """
+  def send_command(pid, command) do
+    GenServer.call(pid, {:send_command, command})
+  end
+
   # GenServer Implementation
 
   @impl true
@@ -106,6 +113,24 @@ defmodule SpaceMouse.Platform.MacOS.PortManager do
   end
 
   @impl true
+  def handle_call({:send_command, command}, _from, state) do
+    case state.port do
+      nil ->
+        {:reply, {:error, :port_not_available}, state}
+        
+      port ->
+        try do
+          Port.command(port, "#{command}\n")
+          {:reply, :ok, state}
+        rescue
+          error ->
+            Logger.error("Failed to send command to HID reader: #{inspect(error)}")
+            {:reply, {:error, {:send_failed, error}}, state}
+        end
+    end
+  end
+
+  @impl true
   def terminate(_reason, state) do
     if state.port do
       Port.close(state.port)
@@ -155,6 +180,9 @@ defmodule SpaceMouse.Platform.MacOS.PortManager do
         
       ["BUTTON", params] ->
         parse_button_event(params)
+        
+      ["LED", params] ->
+        parse_led_event(params)
         
       _ ->
         {:error, {:unknown_format, line}}
@@ -218,6 +246,35 @@ defmodule SpaceMouse.Platform.MacOS.PortManager do
     rescue
       error ->
         {:error, {:button_parse_error, error, params}}
+    end
+  end
+
+  defp parse_led_event(params) do
+    try do
+      # Parse "state=on" or "state=off" format
+      led_data = 
+        params
+        |> String.split(",")
+        |> Enum.reduce(%{}, fn param, acc ->
+          case String.split(param, "=", parts: 2) do
+            ["state", value] ->
+              Map.put(acc, :state, String.to_atom(value))
+            _ ->
+              acc
+          end
+        end)
+      
+      event = %{
+        type: :led_changed,
+        data: led_data,
+        timestamp: System.monotonic_time(:millisecond)
+      }
+      
+      {:ok, event}
+      
+    rescue
+      error ->
+        {:error, {:led_parse_error, error, params}}
     end
   end
 end
