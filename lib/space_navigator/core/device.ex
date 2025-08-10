@@ -124,26 +124,21 @@ defmodule SpaceNavigator.Core.Device do
     auto_reconnect = Keyword.get(opts, :auto_reconnect, true)
     
     # Initialize platform
-    case platform_module.platform_init(owner_pid: self()) do
-      {:ok, platform_state} ->
-        state = %State{
-          platform_module: platform_module,
-          platform_state: platform_state,
-          connection_state: :disconnected,
-          subscribers: MapSet.new(),
-          led_state: :unknown,
-          last_motion: %{x: 0.0, y: 0.0, z: 0.0, rx: 0.0, ry: 0.0, rz: 0.0},
-          last_button_state: %{},
-          auto_reconnect: auto_reconnect
-        }
-        
-        Logger.info("SpaceMouse device manager initialized (platform: #{platform_module})")
-        {:ok, state}
-        
-      {:error, reason} ->
-        Logger.error("Failed to initialize platform #{platform_module}: #{inspect(reason)}")
-        {:stop, reason}
-    end
+    {:ok, platform_state} = platform_module.platform_init(owner_pid: self())
+    
+    state = %State{
+      platform_module: platform_module,
+      platform_state: platform_state,
+      connection_state: :disconnected,
+      subscribers: MapSet.new(),
+      led_state: :unknown,
+      last_motion: %{x: 0.0, y: 0.0, z: 0.0, rx: 0.0, ry: 0.0, rz: 0.0},
+      last_button_state: %{},
+      auto_reconnect: auto_reconnect
+    }
+    
+    Logger.info("SpaceMouse device manager initialized (platform: #{platform_module})")
+    {:ok, state}
   end
 
   @impl true
@@ -412,14 +407,14 @@ defmodule SpaceNavigator.Core.Device do
         
       {:unix, :linux} ->
         # Future Linux implementation
-        SpaceNavigator.Platform.Linux.DirectUsb
+        raise "Linux support not yet implemented. Currently only macOS is supported."
         
       {:win32, _} ->
         # Future Windows implementation  
-        SpaceNavigator.Platform.Windows.HidApi
+        raise "Windows support not yet implemented. Currently only macOS is supported."
         
       other ->
-        raise "Unsupported platform: #{inspect(other)}"
+        raise "Unsupported platform: #{inspect(other)}. Currently only macOS is supported."
     end
   end
 
