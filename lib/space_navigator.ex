@@ -1,94 +1,75 @@
 defmodule SpaceNavigator do
   @moduledoc """
-  SpaceNavigator - USB device communication library.
+  SpaceNavigator - Cross-platform SpaceMouse device support for Elixir.
   
-  This library provides functionality to discover, connect to, and communicate
-  with USB devices using libusb. It's particularly designed for working with
-  3D input devices like the SpaceNavigator, but can be used with any USB device.
+  This library provides a clean, unified interface for working with 3Dconnexion
+  SpaceMouse devices across different operating systems. It automatically handles
+  platform-specific access methods and provides real-time motion and button events.
   
-  ## Basic Usage
+  ## Features
   
-      # List all USB devices
-      {:ok, devices} = SpaceNavigator.list_devices()
+  - Cross-platform SpaceMouse support (macOS, Linux, Windows)
+  - Real-time 6DOF motion tracking (X, Y, Z translation + rotation)
+  - Button press/release event handling
+  - LED control (when supported)
+  - Automatic device connection/reconnection
+  - Clean GenServer-based architecture
+  - Platform-specific optimizations
+  
+  ## Quick Start
+  
+      # Start monitoring for SpaceMouse devices
+      SpaceNavigator.start_monitoring()
       
-      # Find specific devices
-      {:ok, devices} = SpaceNavigator.find_devices(%{vendor_id: 0x046d, product_id: 0xc626})
+      # Subscribe to events
+      SpaceNavigator.subscribe()
       
-      # Connect and read from a device
-      {:ok, data} = SpaceNavigator.connect_and_read(0x046d, 0xc626)
-  
-  ## Advanced Usage
-  
-  For more advanced usage patterns, see `SpaceNavigator.UsbManager` and 
-  `SpaceNavigator.DeviceExample`.
-  """
-
-  alias SpaceNavigator.UsbManager
-  alias SpaceNavigator.DeviceExample
-
-  @doc """
-  Lists all USB devices currently connected to the system.
-  """
-  defdelegate list_devices(), to: UsbManager
-
-  @doc """
-  Finds USB devices matching the given filter criteria.
-  
-  ## Examples
-  
-      # Find devices by vendor and product ID
-      SpaceNavigator.find_devices(%{vendor_id: 0x046d, product_id: 0xc626})
+      # Control LED
+      SpaceNavigator.set_led(:on)
+      SpaceNavigator.set_led(:off)
       
-      # Find all devices from a specific vendor
-      SpaceNavigator.find_devices(%{vendor_id: 0x046d})
-  """
-  defdelegate find_devices(filter \\ %{}), to: UsbManager
-
-  @doc """
-  Opens a connection to a USB device.
-  """
-  defdelegate open_device(device), to: UsbManager
-
-  @doc """
-  Closes a connection to a USB device.
-  """
-  defdelegate close_device(device), to: UsbManager
-
-  @doc """
-  Reads data from a USB device endpoint.
-  """
-  defdelegate read_data(device, endpoint, length, timeout \\ 1000), to: UsbManager
-
-  @doc """
-  Writes data to a USB device endpoint.
-  """
-  defdelegate write_data(device, endpoint, data, timeout \\ 1000), to: UsbManager
-
-  @doc """
-  Convenience function to find and connect to a device, then read data from it.
+      # Check if device is connected
+      SpaceNavigator.connected?()
   
-  This is useful for simple one-off reads from a device.
-  """
-  defdelegate connect_and_read_device(vendor_id, product_id), to: DeviceExample
-
-  @doc """
-  Convenience function to find and connect to a device, then send data to it.
+  ## Event Messages
   
-  This is useful for simple one-off writes to a device.
-  """
-  defdelegate send_data_to_device(vendor_id, product_id, data), to: DeviceExample
-
-  @doc """
-  Starts monitoring a device for continuous input.
+  When subscribed, your process will receive:
   
-  The callback function will be called with each packet of data received.
-  """
-  defdelegate monitor_device(vendor_id, product_id, callback_fun), to: DeviceExample
-
-  @doc """
-  Finds a 3Dconnexion SpaceNavigator device.
+  - `{:spacemouse_connected, device_info}` - Device connected
+  - `{:spacemouse_disconnected, device_info}` - Device disconnected
+  - `{:spacemouse_motion, motion_data}` - 6DOF motion data  
+  - `{:spacemouse_button, button_data}` - Button events
   
-  Returns the first SpaceNavigator device found, or an error if none are found.
+  ## Motion Data Format
+  
+      %{
+        x: integer(),   # Translation X (-32768 to 32767)
+        y: integer(),   # Translation Y
+        z: integer(),   # Translation Z  
+        rx: integer(),  # Rotation X
+        ry: integer(),  # Rotation Y
+        rz: integer()   # Rotation Z
+      }
+  
+  ## Platform Support
+  
+  - **macOS**: Uses IOKit HID Manager (bypasses kernel HID driver)
+  - **Linux**: Direct libusb access (planned)
+  - **Windows**: HID API (planned)
+  
+  The appropriate platform implementation is automatically selected at runtime.
   """
-  defdelegate find_space_navigator(), to: DeviceExample
+
+  # Delegate all public API functions to the Core.Api module
+  defdelegate start_monitoring(), to: SpaceNavigator.Core.Api
+  defdelegate stop_monitoring(), to: SpaceNavigator.Core.Api
+  defdelegate subscribe(pid \\ self()), to: SpaceNavigator.Core.Api
+  defdelegate unsubscribe(pid \\ self()), to: SpaceNavigator.Core.Api
+  defdelegate set_led(state), to: SpaceNavigator.Core.Api
+  defdelegate get_led_state(), to: SpaceNavigator.Core.Api
+  defdelegate connected?(), to: SpaceNavigator.Core.Api
+  defdelegate connection_state(), to: SpaceNavigator.Core.Api
+  defdelegate platform_info(), to: SpaceNavigator.Core.Api
+  defdelegate get_motion_state(), to: SpaceNavigator.Core.Api
+  defdelegate set_auto_reconnect(enabled), to: SpaceNavigator.Core.Api
 end

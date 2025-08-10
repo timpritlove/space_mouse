@@ -8,8 +8,8 @@ defmodule SpaceNavigator.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # USB Manager for device discovery and communication
-      SpaceNavigator.UsbManager
+      # Core SpaceNavigator system
+      SpaceNavigator.Core.Supervisor
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
