@@ -115,6 +115,22 @@ defmodule SpaceMouse.Core.Device do
     GenServer.call(__MODULE__, :platform_info)
   end
 
+  @doc """
+  Get the current motion state.
+  
+  Returns the last received motion data, or zeros if no motion has been detected.
+  """
+  def get_motion_state do
+    GenServer.call(__MODULE__, :get_motion_state)
+  end
+
+  @doc """
+  Set auto-reconnect behavior.
+  """
+  def set_auto_reconnect(enabled) when is_boolean(enabled) do
+    GenServer.call(__MODULE__, {:set_auto_reconnect, enabled})
+  end
+
   # GenServer Implementation
 
   @impl true
@@ -242,6 +258,17 @@ defmodule SpaceMouse.Core.Device do
   def handle_call(:platform_info, _from, state) do
     info = state.platform_module.platform_info()
     {:reply, info, state}
+  end
+
+  @impl true
+  def handle_call(:get_motion_state, _from, state) do
+    {:reply, {:ok, state.last_motion}, state}
+  end
+
+  @impl true
+  def handle_call({:set_auto_reconnect, enabled}, _from, state) do
+    new_state = %{state | auto_reconnect: enabled}
+    {:reply, :ok, new_state}
   end
 
   @impl true

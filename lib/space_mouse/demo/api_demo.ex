@@ -9,9 +9,9 @@ defmodule SpaceMouse.Demo.ApiDemo do
   require Logger
 
   @doc """
-  Basic demonstration of SpaceMouse API usage.
+  Run basic demonstration of SpaceMouse API usage.
   """
-  def basic_demo do
+  def run do
     Logger.info("🚀 SpaceMouse API Demo Starting...")
 
     # Check platform info

@@ -164,8 +164,7 @@ defmodule SpaceMouse.Core.Api do
   """
   @spec get_motion_state() :: %{x: integer(), y: integer(), z: integer(), rx: integer(), ry: integer(), rz: integer()}
   def get_motion_state do
-    # This would need to be added to the Device module
-    {:ok, motion} = GenServer.call(Device, :get_motion_state)
+    {:ok, motion} = Device.get_motion_state()
     motion
   end
 
@@ -177,6 +176,6 @@ defmodule SpaceMouse.Core.Api do
   """
   @spec set_auto_reconnect(boolean()) :: :ok
   def set_auto_reconnect(enabled) when is_boolean(enabled) do
-    GenServer.call(Device, {:set_auto_reconnect, enabled})
+    Device.set_auto_reconnect(enabled)
   end
 end

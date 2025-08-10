@@ -10,13 +10,13 @@ defmodule SpaceMouse.Demo.MotionTracker do
   
   Perfect for understanding SpaceMouse motion data structure.
   
-  Run with: `SpaceMouse.Demo.MotionTracker.start()`
+  Run with: `SpaceMouse.Demo.MotionTracker.run()`
   """
 
   @doc """
-  Start the motion tracking demo.
+  Run the motion tracking demo.
   """
-  def start do
+  def run do
     IO.puts """
     
     🎯 ==============================

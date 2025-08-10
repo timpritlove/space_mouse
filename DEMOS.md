@@ -15,7 +15,7 @@ This document describes the available demonstration programs for the SpaceMouse 
 - Error handling patterns
 - Best practices for real applications
 
-**Run**: `SpaceMouse.Demo.ApiDemo.basic_demo()`
+**Run**: `SpaceMouse.Demo.ApiDemo.run()`
 
 ### 2. Complete Demo (`lib/space_mouse/demo/complete_demo.ex`)
 
@@ -44,7 +44,7 @@ This document describes the available demonstration programs for the SpaceMouse 
 - Coordinate system explanation
 - Real-time motion analysis
 
-**Run**: `SpaceMouse.Demo.MotionTracker.start()`
+**Run**: `SpaceMouse.Demo.MotionTracker.run()`
 
 ## Quick Start
 
@@ -58,10 +58,10 @@ iex -S mix
 iex> SpaceMouse.Demo.CompleteDemo.run()
 
 # Or try the focused motion tracker
-iex> SpaceMouse.Demo.MotionTracker.start()
+iex> SpaceMouse.Demo.MotionTracker.run()
 
 # Or explore the API patterns
-iex> SpaceMouse.Demo.ApiDemo.basic_demo()
+iex> SpaceMouse.Demo.ApiDemo.run()
 ```
 
 ## Educational Value
