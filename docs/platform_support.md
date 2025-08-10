@@ -124,7 +124,7 @@ static void input_callback(void *context, IOReturn result, void *sender, IOHIDVa
 
 #### Elixir Port Management
 
-**File**: `lib/space_navigator/platform/macos/port_manager.ex`
+**File**: `lib/space_mouse/platform/macos/port_manager.ex`
 
 **Purpose**: Manages the C program lifecycle and parses its structured output.
 
@@ -221,7 +221,7 @@ Linux typically allows direct USB access to HID devices, especially with proper 
 
 #### Expected Implementation
 
-**File**: `lib/space_navigator/platform/linux/direct_usb.ex`
+**File**: `lib/space_mouse/platform/linux/direct_usb.ex`
 
 **Direct USB Access**:
 ```elixir
@@ -381,7 +381,7 @@ Similar to macOS, using `SpaceMouse.Platform.Windows.PortManager` to manage the 
 
 The core system automatically selects the appropriate platform implementation:
 
-**File**: `lib/space_navigator/core/device.ex`
+**File**: `lib/space_mouse/core/device.ex`
 
 ```elixir
 defp select_platform do

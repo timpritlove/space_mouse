@@ -44,7 +44,7 @@ defmodule SpaceMouse.Platform.MacOS.PortManager do
     owner_pid = Keyword.get(opts, :owner_pid, self())
     
     # Build path to the HID reader executable
-    priv_dir = :code.priv_dir(:space_navigator)
+    priv_dir = :code.priv_dir(:space_mouse)
     hid_reader_path = Path.join([priv_dir, "platform", "macos", "hid_reader"])
     
     # Verify the executable exists

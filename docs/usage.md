@@ -11,7 +11,7 @@ Add SpaceMouse to your `mix.exs` dependencies:
 ```elixir
 def deps do
   [
-    {:space_navigator, "~> 1.0"}
+    {:space_mouse, "~> 1.0"}
   ]
 end
 ```

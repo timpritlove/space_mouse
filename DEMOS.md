@@ -4,7 +4,7 @@ This document describes the available demonstration programs for the SpaceMouse 
 
 ## Demo Programs
 
-### 1. API Demo (`lib/space_navigator/demo/api_demo.ex`)
+### 1. API Demo (`lib/space_mouse/demo/api_demo.ex`)
 
 **Purpose**: Demonstrates the clean SpaceMouse API usage patterns.
 
@@ -17,7 +17,7 @@ This document describes the available demonstration programs for the SpaceMouse 
 
 **Run**: `SpaceMouse.Demo.ApiDemo.basic_demo()`
 
-### 2. Complete Demo (`lib/space_navigator/demo/complete_demo.ex`)
+### 2. Complete Demo (`lib/space_mouse/demo/complete_demo.ex`)
 
 **Purpose**: Comprehensive demonstration of all SpaceMouse features.
 
@@ -32,7 +32,7 @@ This document describes the available demonstration programs for the SpaceMouse 
 
 **Run**: `SpaceMouse.Demo.CompleteDemo.run()`
 
-### 3. Motion Tracker (`lib/space_navigator/demo/motion_tracker.ex`)
+### 3. Motion Tracker (`lib/space_mouse/demo/motion_tracker.ex`)
 
 **Purpose**: Focused motion tracking demonstration with visual feedback.
 
