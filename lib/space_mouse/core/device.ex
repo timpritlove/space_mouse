@@ -143,22 +143,40 @@ defmodule SpaceMouse.Core.Device do
 
   @impl true
   def handle_call(:start_monitoring, _from, state) do
-    case state.platform_module.start_monitoring(state.platform_state) do
-      {:ok, new_platform_state} ->
-        new_state = %{state | connection_state: :connecting, platform_state: new_platform_state}
-        {:reply, :ok, new_state}
+    # Check if already monitoring
+    case state.connection_state do
+      :connecting ->
+        Logger.debug("SpaceMouse monitoring already starting")
+        {:reply, :ok, state}
         
-      {:error, reason} ->
-        new_state = %{state | connection_state: :error}
-        {:reply, {:error, reason}, new_state}
+      :connected ->
+        Logger.debug("SpaceMouse already connected and monitoring")
+        {:reply, :ok, state}
+        
+      _ ->
+        # Only start monitoring if not already connecting or connected
+        case state.platform_module.start_monitoring(state.platform_state) do
+          {:ok, new_platform_state} ->
+            new_state = %{state | connection_state: :connecting, platform_state: new_platform_state}
+            {:reply, :ok, new_state}
+            
+          {:error, reason} ->
+            new_state = %{state | connection_state: :error}
+            {:reply, {:error, reason}, new_state}
+        end
     end
   end
 
   @impl true
   def handle_call(:stop_monitoring, _from, state) do
-    :ok = state.platform_module.stop_monitoring(state.platform_state)
-    new_state = %{state | connection_state: :disconnected}
-    {:reply, :ok, new_state}
+    case state.platform_module.stop_monitoring(state.platform_state) do
+      {:ok, new_platform_state} ->
+        new_state = %{state | connection_state: :disconnected, platform_state: new_platform_state}
+        {:reply, :ok, new_state}
+        
+      error ->
+        {:reply, error, state}
+    end
   end
 
   @impl true
@@ -375,26 +393,30 @@ defmodule SpaceMouse.Core.Device do
 
   @impl true
   def handle_info(:attempt_reconnect, state) do
-    if state.connection_state == :disconnected do
-      Logger.info("Attempting to reconnect SpaceMouse...")
-      
-      case state.platform_module.start_monitoring(state.platform_state) do
-        {:ok, new_platform_state} ->
-          new_state = %{state | connection_state: :connecting, platform_state: new_platform_state}
-          {:noreply, new_state}
-          
-        {:error, reason} ->
-          Logger.warning("Reconnection failed: #{inspect(reason)}")
-          
-          # Try again later if auto-reconnect is enabled
-          if state.auto_reconnect do
-            Process.send_after(self(), :attempt_reconnect, 5000)
-          end
-          
-          {:noreply, state}
-      end
-    else
-      {:noreply, state}
+    case state.connection_state do
+      :disconnected ->
+        Logger.info("Attempting to reconnect SpaceMouse...")
+        
+        case state.platform_module.start_monitoring(state.platform_state) do
+          {:ok, new_platform_state} ->
+            new_state = %{state | connection_state: :connecting, platform_state: new_platform_state}
+            {:noreply, new_state}
+            
+          {:error, reason} ->
+            Logger.warning("Reconnection failed: #{inspect(reason)}")
+            
+            # Try again later if auto-reconnect is enabled
+            if state.auto_reconnect do
+              Process.send_after(self(), :attempt_reconnect, 5000)
+            end
+            
+            {:noreply, state}
+        end
+        
+      _ ->
+        # Already connecting or connected, don't attempt reconnection
+        Logger.debug("Skipping reconnection attempt - not in disconnected state")
+        {:noreply, state}
     end
   end
 

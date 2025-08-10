@@ -44,13 +44,22 @@ defmodule SpaceMouse.Platform.MacOS.HidBridge do
 
   @impl SpaceMouse.Platform.Behaviour
   def start_monitoring(state) do
-    case PortManager.start_hid_reader(owner_pid: state.owner_pid) do
-      {:ok, port_manager} ->
-        new_state = %{state | port_manager: port_manager}
-        {:ok, new_state}
+    case state.port_manager do
+      nil ->
+        # No port manager exists, start a new one
+        case PortManager.start_hid_reader(owner_pid: state.owner_pid) do
+          {:ok, port_manager} ->
+            new_state = %{state | port_manager: port_manager}
+            {:ok, new_state}
+            
+          {:error, reason} ->
+            {:error, reason}
+        end
         
-      {:error, reason} ->
-        {:error, reason}
+      _existing_port_manager ->
+        # Port manager already exists, don't create a new one
+        Logger.debug("HID reader port manager already running")
+        {:ok, state}
     end
   end
 
@@ -58,11 +67,12 @@ defmodule SpaceMouse.Platform.MacOS.HidBridge do
   def stop_monitoring(state) do
     case state.port_manager do
       nil -> 
-        :ok
+        {:ok, state}
         
       port_manager ->
         PortManager.stop_hid_reader(port_manager)
-        :ok
+        new_state = %{state | port_manager: nil, device_connected: false}
+        {:ok, new_state}
     end
   end
 
