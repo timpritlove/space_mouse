@@ -1,4 +1,4 @@
-defmodule SpaceNavigator.Demo.MotionTracker do
+defmodule SpaceMouse.Demo.MotionTracker do
   @moduledoc """
   Simple, focused motion tracking demonstration.
   
@@ -10,7 +10,7 @@ defmodule SpaceNavigator.Demo.MotionTracker do
   
   Perfect for understanding SpaceMouse motion data structure.
   
-  Run with: `SpaceNavigator.Demo.MotionTracker.start()`
+  Run with: `SpaceMouse.Demo.MotionTracker.start()`
   """
 
   @doc """
@@ -43,8 +43,8 @@ defmodule SpaceNavigator.Demo.MotionTracker do
     """
 
     # Start system and subscribe
-    :ok = SpaceNavigator.start_monitoring()
-    :ok = SpaceNavigator.subscribe()
+    :ok = SpaceMouse.start_monitoring()
+    :ok = SpaceMouse.subscribe()
     
     # Wait for connection
     wait_for_connection()
@@ -68,7 +68,7 @@ defmodule SpaceNavigator.Demo.MotionTracker do
         
     after
       3000 ->
-        if SpaceNavigator.connected?() do
+        if SpaceMouse.connected?() do
           IO.puts "✅ SpaceMouse already connected - starting motion tracking!\n"
         else
           IO.puts "⏳ Still waiting for SpaceMouse..."

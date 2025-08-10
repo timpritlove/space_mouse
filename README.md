@@ -1,13 +1,13 @@
-# SpaceNavigator
+# SpaceMouse
 
 Cross-platform SpaceMouse device support for Elixir applications.
 
-[![Hex.pm](https://img.shields.io/hexpm/v/space_navigator.svg)](https://hex.pm/packages/space_navigator)
-[![Documentation](https://img.shields.io/badge/docs-hexdocs-blue.svg)](https://hexdocs.pm/space_navigator)
+[![Hex.pm](https://img.shields.io/hexpm/v/space_mouse.svg)](https://hex.pm/packages/space_mouse)
+[![Documentation](https://img.shields.io/badge/docs-hexdocs-blue.svg)](https://hexdocs.pm/space_mouse)
 
 ## Overview
 
-SpaceNavigator is an Elixir library that provides unified access to 3Dconnexion SpaceMouse devices across different operating systems. It handles the platform-specific complexities of USB/HID communication and presents a clean, consistent API for real-time 6DOF (six degrees of freedom) input and device control.
+SpaceMouse is an Elixir library that provides unified access to 3Dconnexion SpaceMouse devices across different operating systems. It handles the platform-specific complexities of USB/HID communication and presents a clean, consistent API for real-time 6DOF (six degrees of freedom) input and device control.
 
 ## Features
 
@@ -28,7 +28,7 @@ Add to your `mix.exs`:
 ```elixir
 def deps do
   [
-    {:space_navigator, "~> 1.0"}
+    {:space_mouse, "~> 1.0"}
   ]
 end
 ```
@@ -37,16 +37,16 @@ end
 
 ```elixir
 # Start monitoring for SpaceMouse devices
-SpaceNavigator.start_monitoring()
+SpaceMouse.start_monitoring()
 
 # Subscribe to events
-SpaceNavigator.subscribe()
+SpaceMouse.subscribe()
 
 # Handle events
 receive do
   {:spacemouse_connected, _info} ->
     IO.puts("SpaceMouse connected!")
-    SpaceNavigator.set_led(:on)
+    SpaceMouse.set_led(:on)
     
   {:spacemouse_motion, %{x: x, y: y, z: z}} ->
     IO.puts("Motion: X=#{x}, Y=#{y}, Z=#{z}")
@@ -80,9 +80,9 @@ macOS requires a special approach because the kernel HID driver claims SpaceMous
 ```
 Application Layer
        ↓
-  Public API (SpaceNavigator.Core.Api)
+  Public API (SpaceMouse.Core.Api)
        ↓ 
-  Core Device (SpaceNavigator.Core.Device)
+  Core Device (SpaceMouse.Core.Device)
        ↓
   Platform Layer (Behaviour-based)
        ↓
@@ -106,8 +106,8 @@ defmodule MyApp.CameraController do
   use GenServer
   
   def init(_) do
-    SpaceNavigator.start_monitoring()
-    SpaceNavigator.subscribe()
+    SpaceMouse.start_monitoring()
+    SpaceMouse.subscribe()
     {:ok, %{camera: {0, 0, 0}}}
   end
   
@@ -131,8 +131,8 @@ defmodule MyAppWeb.SpaceMouseLive do
   
   def mount(_params, _session, socket) do
     if connected?(socket) do
-      SpaceNavigator.start_monitoring()
-      SpaceNavigator.subscribe()
+      SpaceMouse.start_monitoring()
+      SpaceMouse.subscribe()
     end
     
     {:ok, assign(socket, motion: %{x: 0, y: 0, z: 0})}
@@ -160,13 +160,13 @@ The library includes several demo applications:
 
 ```bash
 # Basic API demonstration
-mix run -e "SpaceNavigator.Demo.ApiDemo.basic_demo()"
+mix run -e "SpaceMouse.Demo.ApiDemo.basic_demo()"
 
 # Interactive demo with LED control
-mix run -e "SpaceNavigator.Demo.ApiDemo.interactive_demo()"
+mix run -e "SpaceMouse.Demo.ApiDemo.interactive_demo()"
 
 # Motion tracking demo
-mix run -e "SpaceNavigator.Demo.ApiDemo.motion_demo()"
+mix run -e "SpaceMouse.Demo.ApiDemo.motion_demo()"
 ```
 
 ## Development
@@ -174,8 +174,8 @@ mix run -e "SpaceNavigator.Demo.ApiDemo.motion_demo()"
 ### Building from Source
 
 ```bash
-git clone https://github.com/yourorg/space_navigator.git
-cd space_navigator
+git clone https://github.com/yourorg/space_mouse.git
+cd space_mouse
 mix deps.get
 mix compile
 ```
@@ -187,7 +187,7 @@ mix compile
 mix test
 
 # Run with your SpaceMouse connected
-mix run -e "SpaceNavigator.Demo.ApiDemo.basic_demo()"
+mix run -e "SpaceMouse.Demo.ApiDemo.basic_demo()"
 ```
 
 ### Contributing
@@ -203,7 +203,7 @@ mix run -e "SpaceNavigator.Demo.ApiDemo.basic_demo()"
 ## Code Organization
 
 ```
-lib/space_navigator/
+lib/space_mouse/
 ├── core/                    # Core system (clean API)
 │   ├── api.ex              # Public API
 │   ├── device.ex           # Main device abstraction
@@ -316,9 +316,9 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ## Support
 
-- 📖 [Documentation](https://hexdocs.pm/space_navigator)
-- 🐛 [Issue Tracker](https://github.com/yourorg/space_navigator/issues)
-- 💬 [Discussions](https://github.com/yourorg/space_navigator/discussions)
+- 📖 [Documentation](https://hexdocs.pm/space_mouse)
+- 🐛 [Issue Tracker](https://github.com/yourorg/space_mouse/issues)
+- 💬 [Discussions](https://github.com/yourorg/space_mouse/discussions)
 
 ---
 

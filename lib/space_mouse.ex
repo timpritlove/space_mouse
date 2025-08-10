@@ -1,6 +1,6 @@
-defmodule SpaceNavigator do
+defmodule SpaceMouse do
   @moduledoc """
-  SpaceNavigator - Cross-platform SpaceMouse device support for Elixir.
+  SpaceMouse - Cross-platform SpaceMouse device support for Elixir.
   
   This library provides a clean, unified interface for working with 3Dconnexion
   SpaceMouse devices across different operating systems. It automatically handles
@@ -19,17 +19,17 @@ defmodule SpaceNavigator do
   ## Quick Start
   
       # Start monitoring for SpaceMouse devices
-      SpaceNavigator.start_monitoring()
+      SpaceMouse.start_monitoring()
       
       # Subscribe to events
-      SpaceNavigator.subscribe()
+      SpaceMouse.subscribe()
       
       # Control LED
-      SpaceNavigator.set_led(:on)
-      SpaceNavigator.set_led(:off)
+      SpaceMouse.set_led(:on)
+      SpaceMouse.set_led(:off)
       
       # Check if device is connected
-      SpaceNavigator.connected?()
+      SpaceMouse.connected?()
   
   ## Event Messages
   
@@ -62,15 +62,15 @@ defmodule SpaceNavigator do
   """
 
   # Delegate all public API functions to the Core.Api module
-  defdelegate start_monitoring(), to: SpaceNavigator.Core.Api
-  defdelegate stop_monitoring(), to: SpaceNavigator.Core.Api
-  defdelegate subscribe(pid \\ self()), to: SpaceNavigator.Core.Api
-  defdelegate unsubscribe(pid \\ self()), to: SpaceNavigator.Core.Api
-  defdelegate set_led(state), to: SpaceNavigator.Core.Api
-  defdelegate get_led_state(), to: SpaceNavigator.Core.Api
-  defdelegate connected?(), to: SpaceNavigator.Core.Api
-  defdelegate connection_state(), to: SpaceNavigator.Core.Api
-  defdelegate platform_info(), to: SpaceNavigator.Core.Api
-  defdelegate get_motion_state(), to: SpaceNavigator.Core.Api
-  defdelegate set_auto_reconnect(enabled), to: SpaceNavigator.Core.Api
+  defdelegate start_monitoring(), to: SpaceMouse.Core.Api
+  defdelegate stop_monitoring(), to: SpaceMouse.Core.Api
+  defdelegate subscribe(pid \\ self()), to: SpaceMouse.Core.Api
+  defdelegate unsubscribe(pid \\ self()), to: SpaceMouse.Core.Api
+  defdelegate set_led(state), to: SpaceMouse.Core.Api
+  defdelegate get_led_state(), to: SpaceMouse.Core.Api
+  defdelegate connected?(), to: SpaceMouse.Core.Api
+  defdelegate connection_state(), to: SpaceMouse.Core.Api
+  defdelegate platform_info(), to: SpaceMouse.Core.Api
+  defdelegate get_motion_state(), to: SpaceMouse.Core.Api
+  defdelegate set_auto_reconnect(enabled), to: SpaceMouse.Core.Api
 end

@@ -1,35 +1,35 @@
-# SpaceNavigator Architecture
+# SpaceMouse Architecture
 
-This document describes the architecture of the SpaceNavigator library, which provides cross-platform SpaceMouse device support for Elixir applications.
+This document describes the architecture of the SpaceMouse library, which provides cross-platform SpaceMouse device support for Elixir applications.
 
 ## Overview
 
-SpaceNavigator is designed with a layered architecture that cleanly separates platform-specific implementation details from the core application logic. This allows the library to work across different operating systems with different access methods while presenting a unified API to developers.
+SpaceMouse is designed with a layered architecture that cleanly separates platform-specific implementation details from the core application logic. This allows the library to work across different operating systems with different access methods while presenting a unified API to developers.
 
 ## Architecture Layers
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                     Application Layer                       │
-│           (Your Elixir application using SpaceNavigator)   │
+│           (Your Elixir application using SpaceMouse)   │
 └─────────────────────────────────────────────────────────────┘
                                  │
 ┌─────────────────────────────────────────────────────────────┐
 │                      Public API Layer                      │
-│                  SpaceNavigator.Core.Api                   │
+│                  SpaceMouse.Core.Api                   │
 │  • start_monitoring()  • set_led()  • subscribe()         │
 └─────────────────────────────────────────────────────────────┘
                                  │
 ┌─────────────────────────────────────────────────────────────┐
 │                    Core Device Layer                       │
-│               SpaceNavigator.Core.Device                   │
+│               SpaceMouse.Core.Device                   │
 │  • Connection management  • Event distribution             │
 │  • Platform abstraction  • State management               │
 └─────────────────────────────────────────────────────────────┘
                                  │
 ┌─────────────────────────────────────────────────────────────┐
 │                   Platform Layer                           │
-│           SpaceNavigator.Platform.Behaviour               │
+│           SpaceMouse.Platform.Behaviour               │
 ├─────────────────┬─────────────────┬─────────────────────────┤
 │      macOS      │      Linux      │       Windows           │
 │   IOKit HID     │   Direct USB    │       HID API           │
@@ -44,7 +44,7 @@ SpaceNavigator is designed with a layered architecture that cleanly separates pl
 
 ## Core Components
 
-### 1. Public API (`SpaceNavigator.Core.Api`)
+### 1. Public API (`SpaceMouse.Core.Api`)
 
 The main interface for external applications. Provides simple, clean functions:
 
@@ -53,7 +53,7 @@ The main interface for external applications. Provides simple, clean functions:
 - **LED Control**: `set_led(:on/:off)`, `get_led_state()`
 - **Status Queries**: `connected?()`, `connection_state()`
 
-### 2. Core Device (`SpaceNavigator.Core.Device`)
+### 2. Core Device (`SpaceMouse.Core.Device`)
 
 The central GenServer that manages device state and coordinates between the platform layer and application layer:
 
@@ -62,7 +62,7 @@ The central GenServer that manages device state and coordinates between the plat
 - **Event Distribution**: Forwards platform events to subscribers
 - **Auto-reconnection**: Handles device disconnection/reconnection
 
-### 3. Platform Behaviour (`SpaceNavigator.Platform.Behaviour`)
+### 3. Platform Behaviour (`SpaceMouse.Platform.Behaviour`)
 
 Defines the interface that all platform implementations must follow:
 
@@ -78,7 +78,7 @@ Defines the interface that all platform implementations must follow:
 
 ## Platform Implementations
 
-### macOS Implementation (`SpaceNavigator.Platform.MacOS.HidBridge`)
+### macOS Implementation (`SpaceMouse.Platform.MacOS.HidBridge`)
 
 **Why needed**: macOS's kernel HID driver claims SpaceMouse devices, preventing direct USB access.
 
@@ -149,7 +149,7 @@ Application → Core Device → Platform → (varies by platform)
 ### Core Device State
 ```elixir
 %State{
-  platform_module: SpaceNavigator.Platform.MacOS.HidBridge,
+  platform_module: SpaceMouse.Platform.MacOS.HidBridge,
   platform_state: %HidBridge.State{...},
   connection_state: :connected,  # :disconnected | :connecting | :connected | :error
   subscribers: MapSet.new([pid1, pid2]),
@@ -174,9 +174,9 @@ Application → Core Device → Platform → (varies by platform)
 
 ### Supervision Tree
 ```
-SpaceNavigator.Application
-└── SpaceNavigator.Core.Supervisor
-    └── SpaceNavigator.Core.Device
+SpaceMouse.Application
+└── SpaceMouse.Core.Supervisor
+    └── SpaceMouse.Core.Device
         └── (Platform manages its own processes)
 ```
 
@@ -215,7 +215,7 @@ Automatic based on `:os.type()`:
 - `{:win32, _}` → Windows implementation (future)
 
 ### Adding New Platforms
-1. Implement `SpaceNavigator.Platform.Behaviour`
+1. Implement `SpaceMouse.Platform.Behaviour`
 2. Add platform detection in `Core.Device.select_platform/0`
 3. Test with demo applications
 

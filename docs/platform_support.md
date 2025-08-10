@@ -225,8 +225,8 @@ Linux typically allows direct USB access to HID devices, especially with proper 
 
 **Direct USB Access**:
 ```elixir
-defmodule SpaceNavigator.Platform.Linux.DirectUsb do
-  @behaviour SpaceNavigator.Platform.Behaviour
+defmodule SpaceMouse.Platform.Linux.DirectUsb do
+  @behaviour SpaceMouse.Platform.Behaviour
   
   def platform_init(opts) do
     # Initialize USB context
@@ -280,7 +280,7 @@ SUBSYSTEM=="usb", ATTRS{idVendor}=="256f", ATTRS{idProduct}=="c635", MODE="0664"
 
 **Alternative: Run with sudo** (not recommended for production):
 ```bash
-sudo mix run -e "SpaceNavigator.start_monitoring()"
+sudo mix run -e "SpaceMouse.start_monitoring()"
 ```
 
 #### LED Control Implementation
@@ -375,7 +375,7 @@ BOOL result = WriteFile(device_handle, report_data, report_size, &bytes_written,
 
 #### Elixir Port Management
 
-Similar to macOS, using `SpaceNavigator.Platform.Windows.PortManager` to manage the C program and parse its output.
+Similar to macOS, using `SpaceMouse.Platform.Windows.PortManager` to manage the C program and parse its output.
 
 ## Platform Selection Logic
 
@@ -387,13 +387,13 @@ The core system automatically selects the appropriate platform implementation:
 defp select_platform do
   case :os.type() do
     {:unix, :darwin} ->
-      SpaceNavigator.Platform.MacOS.HidBridge
+      SpaceMouse.Platform.MacOS.HidBridge
       
     {:unix, :linux} ->
-      SpaceNavigator.Platform.Linux.DirectUsb
+      SpaceMouse.Platform.Linux.DirectUsb
       
     {:win32, _} ->
-      SpaceNavigator.Platform.Windows.HidBridge
+      SpaceMouse.Platform.Windows.HidBridge
       
     other ->
       raise "Unsupported platform: #{inspect(other)}"
@@ -411,7 +411,7 @@ cd priv/platform/macos
 ./hid_reader
 
 # Test Elixir integration
-mix run -e "SpaceNavigator.Demo.ApiDemo.basic_demo()"
+mix run -e "SpaceMouse.Demo.ApiDemo.basic_demo()"
 ```
 
 ### Linux Testing (Future)
@@ -422,7 +422,7 @@ ls -l /dev/hidraw*
 lsusb | grep 3Dconnexion
 
 # Test direct USB access
-mix run -e "SpaceNavigator.Demo.ApiDemo.basic_demo()"
+mix run -e "SpaceMouse.Demo.ApiDemo.basic_demo()"
 ```
 
 ### Windows Testing (Future)
@@ -432,7 +432,7 @@ REM Verify C program compiles
 cl /I"C:\Program Files (x86)\Windows Kits\10\Include\shared" hid_bridge.c
 
 REM Test Elixir integration
-mix run -e "SpaceNavigator.Demo.ApiDemo.basic_demo()"
+mix run -e "SpaceMouse.Demo.ApiDemo.basic_demo()"
 ```
 
 ## Performance Comparison

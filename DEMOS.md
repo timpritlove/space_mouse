@@ -1,12 +1,12 @@
-# SpaceNavigator Demos
+# SpaceMouse Demos
 
-This document describes the available demonstration programs for the SpaceNavigator library.
+This document describes the available demonstration programs for the SpaceMouse library.
 
 ## Demo Programs
 
 ### 1. API Demo (`lib/space_navigator/demo/api_demo.ex`)
 
-**Purpose**: Demonstrates the clean SpaceNavigator API usage patterns.
+**Purpose**: Demonstrates the clean SpaceMouse API usage patterns.
 
 **Features**:
 - Basic API function examples
@@ -15,11 +15,11 @@ This document describes the available demonstration programs for the SpaceNaviga
 - Error handling patterns
 - Best practices for real applications
 
-**Run**: `SpaceNavigator.Demo.ApiDemo.basic_demo()`
+**Run**: `SpaceMouse.Demo.ApiDemo.basic_demo()`
 
 ### 2. Complete Demo (`lib/space_navigator/demo/complete_demo.ex`)
 
-**Purpose**: Comprehensive demonstration of all SpaceNavigator features.
+**Purpose**: Comprehensive demonstration of all SpaceMouse features.
 
 **Features**:
 - Device connection/disconnection handling
@@ -30,7 +30,7 @@ This document describes the available demonstration programs for the SpaceNaviga
 - Performance statistics
 - Interactive LED control (Button 1 toggles LED)
 
-**Run**: `SpaceNavigator.Demo.CompleteDemo.run()`
+**Run**: `SpaceMouse.Demo.CompleteDemo.run()`
 
 ### 3. Motion Tracker (`lib/space_navigator/demo/motion_tracker.ex`)
 
@@ -44,7 +44,7 @@ This document describes the available demonstration programs for the SpaceNaviga
 - Coordinate system explanation
 - Real-time motion analysis
 
-**Run**: `SpaceNavigator.Demo.MotionTracker.start()`
+**Run**: `SpaceMouse.Demo.MotionTracker.start()`
 
 ## Quick Start
 
@@ -55,13 +55,13 @@ To try the demos:
 iex -S mix
 
 # Run the complete demo (recommended first try)
-iex> SpaceNavigator.Demo.CompleteDemo.run()
+iex> SpaceMouse.Demo.CompleteDemo.run()
 
 # Or try the focused motion tracker
-iex> SpaceNavigator.Demo.MotionTracker.start()
+iex> SpaceMouse.Demo.MotionTracker.start()
 
 # Or explore the API patterns
-iex> SpaceNavigator.Demo.ApiDemo.basic_demo()
+iex> SpaceMouse.Demo.ApiDemo.basic_demo()
 ```
 
 ## Educational Value

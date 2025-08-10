@@ -1,9 +1,9 @@
-defmodule SpaceNavigator.MixProject do
+defmodule SpaceMouse.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :space_navigator,
+      app: :space_mouse,
       version: "0.1.0",
       elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
@@ -15,7 +15,7 @@ defmodule SpaceNavigator.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {SpaceNavigator.Application, []}
+      mod: {SpaceMouse.Application, []}
     ]
   end
 

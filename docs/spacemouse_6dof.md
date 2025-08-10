@@ -20,7 +20,7 @@ The SpaceMouse provides simultaneous input across six axes of movement:
 
 ## Value Ranges
 
-The SpaceNavigator library automatically normalizes raw hardware values to a standardized range:
+The SpaceMouse library automatically normalizes raw hardware values to a standardized range:
 
 ### Library Output (Normalized)
 

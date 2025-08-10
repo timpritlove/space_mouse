@@ -1,6 +1,6 @@
-defmodule SpaceNavigator.Demo.CompleteDemo do
+defmodule SpaceMouse.Demo.CompleteDemo do
   @moduledoc """
-  Complete demonstration of SpaceNavigator functionality.
+  Complete demonstration of SpaceMouse functionality.
   
   This demo shows all the key features:
   - Device connection/disconnection
@@ -9,19 +9,19 @@ defmodule SpaceNavigator.Demo.CompleteDemo do
   - LED control and state change events
   - Proper event subscription and handling
   
-  Run with: `SpaceNavigator.Demo.CompleteDemo.run()`
+  Run with: `SpaceMouse.Demo.CompleteDemo.run()`
   """
 
   require Logger
 
   @doc """
-  Run the complete SpaceNavigator demonstration.
+  Run the complete SpaceMouse demonstration.
   """
   def run do
     IO.puts """
     
     🚀 =======================================
-       SpaceNavigator Complete Demo
+       SpaceMouse Complete Demo
     =======================================
     
     This demo will:
@@ -37,8 +37,8 @@ defmodule SpaceNavigator.Demo.CompleteDemo do
     """
 
     # Start monitoring and subscribe to events
-    :ok = SpaceNavigator.start_monitoring()
-    :ok = SpaceNavigator.subscribe()
+    :ok = SpaceMouse.start_monitoring()
+    :ok = SpaceMouse.subscribe()
     
     # Wait for connection or show current state
     show_initial_state()
@@ -53,10 +53,10 @@ defmodule SpaceNavigator.Demo.CompleteDemo do
   end
 
   defp show_initial_state do
-    case SpaceNavigator.connected?() do
+    case SpaceMouse.connected?() do
       true ->
         IO.puts "✅ SpaceMouse already connected!"
-        {:ok, led_state} = SpaceNavigator.get_led_state()
+        {:ok, led_state} = SpaceMouse.get_led_state()
         IO.puts "💡 Current LED state: #{led_state}"
         test_led_control()
         
@@ -67,11 +67,11 @@ defmodule SpaceNavigator.Demo.CompleteDemo do
 
   defp test_led_control do
     IO.puts "🔆 Testing LED control..."
-    SpaceNavigator.set_led(:on)
+    SpaceMouse.set_led(:on)
     Process.sleep(1000)
-    SpaceNavigator.set_led(:off)
+    SpaceMouse.set_led(:off)
     Process.sleep(500)
-    SpaceNavigator.set_led(:on)
+    SpaceMouse.set_led(:on)
     IO.puts "💡 LED should be on now"
   end
 
@@ -136,9 +136,9 @@ defmodule SpaceNavigator.Demo.CompleteDemo do
       
       # Demo: Toggle LED when button 1 is pressed
       if id == 1 and button_state == :pressed do
-        {:ok, current_led} = SpaceNavigator.get_led_state()
+        {:ok, current_led} = SpaceMouse.get_led_state()
         new_led = if current_led == :on, do: :off, else: :on
-        SpaceNavigator.set_led(new_led)
+        SpaceMouse.set_led(new_led)
         IO.puts "   💡 Toggled LED to #{new_led}"
       end
     end
@@ -184,8 +184,8 @@ defmodule SpaceNavigator.Demo.CompleteDemo do
     📊 === Stats (last #{time_diff}s) ===
     Motion events: #{state.motion_count} (~#{:erlang.float_to_binary(motion_rate, decimals: 1)}/s)
     Active buttons: #{format_active_buttons(state.button_states)}
-    Device connected: #{SpaceNavigator.connected?()}
-    Platform: #{inspect(SpaceNavigator.platform_info())}
+    Device connected: #{SpaceMouse.connected?()}
+    Platform: #{inspect(SpaceMouse.platform_info())}
     =====================================
     
     """
@@ -195,9 +195,9 @@ defmodule SpaceNavigator.Demo.CompleteDemo do
     IO.puts "✨ LED Demo: 3 quick blinks..."
     
     for _i <- 1..3 do
-      SpaceNavigator.set_led(:off)
+      SpaceMouse.set_led(:off)
       Process.sleep(200)
-      SpaceNavigator.set_led(:on)
+      SpaceMouse.set_led(:on)
       Process.sleep(200)
     end
   end

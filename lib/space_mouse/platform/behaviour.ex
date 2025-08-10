@@ -1,4 +1,4 @@
-defmodule SpaceNavigator.Platform.Behaviour do
+defmodule SpaceMouse.Platform.Behaviour do
   @moduledoc """
   Behaviour for platform-specific SpaceMouse communication implementations.
   

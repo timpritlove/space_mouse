@@ -1,12 +1,12 @@
-# SpaceNavigator Usage Guide
+# SpaceMouse Usage Guide
 
-This guide shows how to use the SpaceNavigator library in your Elixir applications for cross-platform SpaceMouse support.
+This guide shows how to use the SpaceMouse library in your Elixir applications for cross-platform SpaceMouse support.
 
 ## Quick Start
 
 ### Installation
 
-Add SpaceNavigator to your `mix.exs` dependencies:
+Add SpaceMouse to your `mix.exs` dependencies:
 
 ```elixir
 def deps do
@@ -22,19 +22,19 @@ Run `mix deps.get` to install.
 
 ```elixir
 # Start monitoring for SpaceMouse devices
-SpaceNavigator.start_monitoring()
+SpaceMouse.start_monitoring()
 
 # Subscribe to events
-SpaceNavigator.subscribe()
+SpaceMouse.subscribe()
 
 # Check if a device is connected
-if SpaceNavigator.connected?() do
+if SpaceMouse.connected?() do
   IO.puts("SpaceMouse is ready!")
 end
 
 # Control the LED
-SpaceNavigator.set_led(:on)
-SpaceNavigator.set_led(:off)
+SpaceMouse.set_led(:on)
+SpaceMouse.set_led(:off)
 ```
 
 ### Receiving Events
@@ -71,7 +71,7 @@ end
 Start monitoring for SpaceMouse devices. This begins watching for device connections.
 
 ```elixir
-case SpaceNavigator.start_monitoring() do
+case SpaceMouse.start_monitoring() do
   :ok -> IO.puts("Monitoring started")
   {:error, reason} -> IO.puts("Failed to start: #{reason}")
 end
@@ -81,14 +81,14 @@ end
 Stop monitoring and disconnect from any connected devices.
 
 ```elixir
-SpaceNavigator.stop_monitoring()
+SpaceMouse.stop_monitoring()
 ```
 
 #### `connected?()`
 Check if a SpaceMouse is currently connected.
 
 ```elixir
-if SpaceNavigator.connected?() do
+if SpaceMouse.connected?() do
   # Device is ready for use
 end
 ```
@@ -97,7 +97,7 @@ end
 Get detailed connection state.
 
 ```elixir
-case SpaceNavigator.connection_state() do
+case SpaceMouse.connection_state() do
   :disconnected -> IO.puts("No device")
   :connecting -> IO.puts("Connecting...")
   :connected -> IO.puts("Device ready")
@@ -112,17 +112,17 @@ Subscribe a process to SpaceMouse events.
 
 ```elixir
 # Subscribe current process
-SpaceNavigator.subscribe()
+SpaceMouse.subscribe()
 
 # Subscribe different process
-SpaceNavigator.subscribe(other_pid)
+SpaceMouse.subscribe(other_pid)
 ```
 
 #### `unsubscribe(pid \\ self())`
 Unsubscribe from events.
 
 ```elixir
-SpaceNavigator.unsubscribe()
+SpaceMouse.unsubscribe()
 ```
 
 ### LED Control
@@ -131,15 +131,15 @@ SpaceNavigator.unsubscribe()
 Control the SpaceMouse LED.
 
 ```elixir
-SpaceNavigator.set_led(:on)   # Turn LED on
-SpaceNavigator.set_led(:off)  # Turn LED off
+SpaceMouse.set_led(:on)   # Turn LED on
+SpaceMouse.set_led(:off)  # Turn LED off
 ```
 
 #### `get_led_state()`
 Get current LED state.
 
 ```elixir
-{:ok, state} = SpaceNavigator.get_led_state()
+{:ok, state} = SpaceMouse.get_led_state()
 # state is :on, :off, or :unknown
 ```
 
@@ -149,7 +149,7 @@ Get current LED state.
 Get information about the current platform implementation.
 
 ```elixir
-info = SpaceNavigator.platform_info()
+info = SpaceMouse.platform_info()
 # %{platform: :macos, method: :iokit_hid, version: "1.0.0"}
 ```
 
@@ -159,7 +159,7 @@ info = SpaceNavigator.platform_info()
 Get the last received motion data.
 
 ```elixir
-motion = SpaceNavigator.get_motion_state()
+motion = SpaceMouse.get_motion_state()
 # %{x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0}
 ```
 
@@ -169,8 +169,8 @@ motion = SpaceNavigator.get_motion_state()
 Configure automatic reconnection behavior.
 
 ```elixir
-SpaceNavigator.set_auto_reconnect(true)   # Enable auto-reconnect (default)
-SpaceNavigator.set_auto_reconnect(false)  # Disable auto-reconnect
+SpaceMouse.set_auto_reconnect(true)   # Enable auto-reconnect (default)
+SpaceMouse.set_auto_reconnect(false)  # Disable auto-reconnect
 ```
 
 ## Event Types and Data Formats
@@ -246,7 +246,7 @@ SpaceNavigator.set_auto_reconnect(false)  # Disable auto-reconnect
 ```
 
 **LED State Events**:
-- Emitted whenever `SpaceNavigator.set_led/1` changes the LED state
+- Emitted whenever `SpaceMouse.set_led/1` changes the LED state
 - Only emitted on actual state changes (no event if setting same state)
 - `from` can be `:unknown` on first LED command after connection
 
@@ -263,14 +263,14 @@ defmodule MyApp.SpaceMouseHandler do
   end
   
   def init(_) do
-    SpaceNavigator.start_monitoring()
-    SpaceNavigator.subscribe()
+    SpaceMouse.start_monitoring()
+    SpaceMouse.subscribe()
     {:ok, %{}}
   end
   
   def handle_info({:spacemouse_connected, _info}, state) do
     IO.puts("SpaceMouse ready!")
-    SpaceNavigator.set_led(:on)
+    SpaceMouse.set_led(:on)
     {:noreply, state}
   end
   
@@ -391,8 +391,8 @@ defmodule MyApp.ModeController do
     {:noreply, state}
   end
   
-  defp update_led_for_mode(:navigate), do: SpaceNavigator.set_led(:on)
-  defp update_led_for_mode(:select), do: SpaceNavigator.set_led(:off)
+  defp update_led_for_mode(:navigate), do: SpaceMouse.set_led(:on)
+  defp update_led_for_mode(:select), do: SpaceMouse.set_led(:off)
 end
 ```
 
@@ -403,7 +403,7 @@ end
 Run the basic API demonstration:
 
 ```bash
-mix run -e "SpaceNavigator.Demo.ApiDemo.basic_demo()"
+mix run -e "SpaceMouse.Demo.ApiDemo.basic_demo()"
 ```
 
 ### Interactive Demo
@@ -411,7 +411,7 @@ mix run -e "SpaceNavigator.Demo.ApiDemo.basic_demo()"
 Run the interactive demo with LED control:
 
 ```bash
-mix run -e "SpaceNavigator.Demo.ApiDemo.interactive_demo()"
+mix run -e "SpaceMouse.Demo.ApiDemo.interactive_demo()"
 ```
 
 ### Motion Tracking Demo
@@ -419,7 +419,7 @@ mix run -e "SpaceNavigator.Demo.ApiDemo.interactive_demo()"
 Run the motion tracking demo:
 
 ```bash
-mix run -e "SpaceNavigator.Demo.ApiDemo.motion_demo()"
+mix run -e "SpaceMouse.Demo.ApiDemo.motion_demo()"
 ```
 
 ## Integration with Phoenix LiveView
@@ -430,8 +430,8 @@ defmodule MyAppWeb.SpaceMouseLive do
   
   def mount(_params, _session, socket) do
     if connected?(socket) do
-      SpaceNavigator.start_monitoring()
-      SpaceNavigator.subscribe()
+      SpaceMouse.start_monitoring()
+      SpaceMouse.subscribe()
     end
     
     {:ok, assign(socket, motion: %{x: 0, y: 0, z: 0}, connected: false)}
@@ -467,9 +467,9 @@ defmodule MyAppWeb.SpaceMouseLive do
   
   def handle_event("toggle_led", _, socket) do
     # Toggle LED state
-    {:ok, current_state} = SpaceNavigator.get_led_state()
+    {:ok, current_state} = SpaceMouse.get_led_state()
     new_state = if current_state == :on, do: :off, else: :on
-    SpaceNavigator.set_led(new_state)
+    SpaceMouse.set_led(new_state)
     
     {:noreply, socket}
   end
@@ -481,7 +481,7 @@ end
 ### Connection Errors
 
 ```elixir
-case SpaceNavigator.start_monitoring() do
+case SpaceMouse.start_monitoring() do
   :ok ->
     IO.puts("Monitoring started successfully")
     
@@ -577,17 +577,17 @@ end
 
 1. **Check connection**:
    ```elixir
-   SpaceNavigator.connected?()  # Should return true
+   SpaceMouse.connected?()  # Should return true
    ```
 
 2. **Verify subscription**:
    ```elixir
-   SpaceNavigator.subscribe()  # Call again to ensure subscription
+   SpaceMouse.subscribe()  # Call again to ensure subscription
    ```
 
 3. **Check platform**:
    ```elixir
-   SpaceNavigator.platform_info()  # Verify correct platform detected
+   SpaceMouse.platform_info()  # Verify correct platform detected
    ```
 
 ### LED Control Not Working
@@ -595,7 +595,7 @@ end
 LED control may not be supported on all platforms:
 
 ```elixir
-case SpaceNavigator.set_led(:on) do
+case SpaceMouse.set_led(:on) do
   :ok -> IO.puts("LED control works")
   {:error, :not_supported} -> IO.puts("LED control not available")
   {:error, reason} -> IO.puts("LED error: #{reason}")
@@ -625,4 +625,4 @@ sudo udevadm trigger
 
 On macOS, you may see security warnings about the C helper program. This is normal - the program only accesses HID devices and has no network or filesystem access.
 
-This usage guide provides comprehensive examples for integrating SpaceNavigator into your Elixir applications!
+This usage guide provides comprehensive examples for integrating SpaceMouse into your Elixir applications!

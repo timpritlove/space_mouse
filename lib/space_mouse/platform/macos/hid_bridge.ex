@@ -1,4 +1,4 @@
-defmodule SpaceNavigator.Platform.MacOS.HidBridge do
+defmodule SpaceMouse.Platform.MacOS.HidBridge do
   @moduledoc """
   macOS platform implementation using IOKit HID Manager.
   
@@ -10,11 +10,11 @@ defmodule SpaceNavigator.Platform.MacOS.HidBridge do
   structured events that this module parses and forwards to the core system.
   """
 
-  @behaviour SpaceNavigator.Platform.Behaviour
+  @behaviour SpaceMouse.Platform.Behaviour
   
   require Logger
 
-  alias SpaceNavigator.Platform.MacOS.PortManager
+  alias SpaceMouse.Platform.MacOS.PortManager
 
   defmodule State do
     @moduledoc false
@@ -28,7 +28,7 @@ defmodule SpaceNavigator.Platform.MacOS.HidBridge do
 
   # Platform Behaviour Implementation
 
-  @impl SpaceNavigator.Platform.Behaviour
+  @impl SpaceMouse.Platform.Behaviour
   def platform_init(opts) do
     owner_pid = Keyword.get(opts, :owner_pid, self())
     
@@ -42,7 +42,7 @@ defmodule SpaceNavigator.Platform.MacOS.HidBridge do
     {:ok, state}
   end
 
-  @impl SpaceNavigator.Platform.Behaviour
+  @impl SpaceMouse.Platform.Behaviour
   def start_monitoring(state) do
     case PortManager.start_hid_reader(owner_pid: state.owner_pid) do
       {:ok, port_manager} ->
@@ -54,7 +54,7 @@ defmodule SpaceNavigator.Platform.MacOS.HidBridge do
     end
   end
 
-  @impl SpaceNavigator.Platform.Behaviour
+  @impl SpaceMouse.Platform.Behaviour
   def stop_monitoring(state) do
     case state.port_manager do
       nil -> 
@@ -66,7 +66,7 @@ defmodule SpaceNavigator.Platform.MacOS.HidBridge do
     end
   end
 
-  @impl SpaceNavigator.Platform.Behaviour
+  @impl SpaceMouse.Platform.Behaviour
   def send_led_command(state, command) do
     case send_led_command_impl(state, command) do
       :ok -> {:ok, %{state | led_state: command}}
@@ -74,17 +74,17 @@ defmodule SpaceNavigator.Platform.MacOS.HidBridge do
     end
   end
 
-  @impl SpaceNavigator.Platform.Behaviour
+  @impl SpaceMouse.Platform.Behaviour
   def get_led_state(state) do
     {:ok, state.led_state}
   end
 
-  @impl SpaceNavigator.Platform.Behaviour
+  @impl SpaceMouse.Platform.Behaviour
   def device_connected?(state) do
     {:ok, state.device_connected}
   end
 
-  @impl SpaceNavigator.Platform.Behaviour
+  @impl SpaceMouse.Platform.Behaviour
   def platform_info do
     %{
       platform: :macos,

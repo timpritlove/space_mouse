@@ -1,4 +1,4 @@
-defmodule SpaceNavigator.Core.Api do
+defmodule SpaceMouse.Core.Api do
   @moduledoc """
   Clean, simple public API for SpaceMouse interaction.
   
@@ -9,17 +9,17 @@ defmodule SpaceNavigator.Core.Api do
   ## Basic Usage
   
       # Start monitoring for devices
-      SpaceNavigator.start_monitoring()
+      SpaceMouse.start_monitoring()
       
       # Subscribe to events  
-      SpaceNavigator.subscribe()
+      SpaceMouse.subscribe()
       
       # Control LED
-      SpaceNavigator.set_led(:on)
-      SpaceNavigator.set_led(:off)
+      SpaceMouse.set_led(:on)
+      SpaceMouse.set_led(:off)
       
       # Check connection status
-      SpaceNavigator.connected?()
+      SpaceMouse.connected?()
   
   ## Event Messages
   
@@ -49,7 +49,7 @@ defmodule SpaceNavigator.Core.Api do
       }
   """
 
-  alias SpaceNavigator.Core.Device
+  alias SpaceMouse.Core.Device
 
   @doc """
   Start monitoring for SpaceMouse devices.

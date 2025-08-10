@@ -1,30 +1,30 @@
-defmodule SpaceNavigator.Demo.ApiDemo do
+defmodule SpaceMouse.Demo.ApiDemo do
   @moduledoc """
-  Demonstration of the clean SpaceNavigator API.
+  Demonstration of the clean SpaceMouse API.
   
-  This module shows how to use the new unified SpaceNavigator interface
+  This module shows how to use the new unified SpaceMouse interface
   for cross-platform SpaceMouse interaction.
   """
 
   require Logger
 
   @doc """
-  Basic demonstration of SpaceNavigator API usage.
+  Basic demonstration of SpaceMouse API usage.
   """
   def basic_demo do
-    Logger.info("🚀 SpaceNavigator API Demo Starting...")
+    Logger.info("🚀 SpaceMouse API Demo Starting...")
 
     # Check platform info
-    platform = SpaceNavigator.platform_info()
+    platform = SpaceMouse.platform_info()
     Logger.info("📋 Platform: #{inspect(platform)}")
 
     # Start monitoring for devices
-    case SpaceNavigator.start_monitoring() do
+    case SpaceMouse.start_monitoring() do
       :ok ->
         Logger.info("👁️ Monitoring started - connect your SpaceMouse!")
         
         # Subscribe to events
-        SpaceNavigator.subscribe()
+        SpaceMouse.subscribe()
         
         # Demo loop
         demo_loop()
@@ -38,15 +38,15 @@ defmodule SpaceNavigator.Demo.ApiDemo do
   Interactive demo with LED control.
   """
   def interactive_demo do
-    Logger.info("🎮 Interactive SpaceNavigator Demo")
+    Logger.info("🎮 Interactive SpaceMouse Demo")
     
     # Start monitoring
-    SpaceNavigator.start_monitoring()
-    SpaceNavigator.subscribe()
+    SpaceMouse.start_monitoring()
+    SpaceMouse.subscribe()
     
     IO.puts("""
     
-    🎯 SpaceNavigator Interactive Demo
+    🎯 SpaceMouse Interactive Demo
     
     Commands:
       1 - Turn LED ON
@@ -68,8 +68,8 @@ defmodule SpaceNavigator.Demo.ApiDemo do
   def motion_demo do
     Logger.info("🎯 Motion Tracking Demo")
     
-    SpaceNavigator.start_monitoring()
-    SpaceNavigator.subscribe()
+    SpaceMouse.start_monitoring()
+    SpaceMouse.subscribe()
     
     IO.puts("🎮 Move your SpaceMouse to see motion data...")
     IO.puts("💡 Press Ctrl+C to exit")
@@ -85,7 +85,7 @@ defmodule SpaceNavigator.Demo.ApiDemo do
         Logger.info("✅ SpaceMouse connected: #{inspect(device_info)}")
         
         # Turn on LED to show connection
-        case SpaceNavigator.set_led(:on) do
+        case SpaceMouse.set_led(:on) do
           :ok -> Logger.info("💡 LED turned on")
           error -> Logger.warning("💡 LED control failed: #{inspect(error)}")
         end
@@ -110,7 +110,7 @@ defmodule SpaceNavigator.Demo.ApiDemo do
     after
       30_000 ->
         Logger.info("⏰ Demo timeout - stopping...")
-        SpaceNavigator.stop_monitoring()
+        SpaceMouse.stop_monitoring()
     end
   end
 
@@ -119,7 +119,7 @@ defmodule SpaceNavigator.Demo.ApiDemo do
     
     case IO.gets("") |> String.trim() do
       "1" ->
-        case SpaceNavigator.set_led(:on) do
+        case SpaceMouse.set_led(:on) do
           :ok -> IO.puts("🔆 LED ON")
           error -> IO.puts("❌ LED control failed: #{inspect(error)}")
         end
@@ -127,7 +127,7 @@ defmodule SpaceNavigator.Demo.ApiDemo do
         interactive_loop()
         
       "2" ->
-        case SpaceNavigator.set_led(:off) do
+        case SpaceMouse.set_led(:off) do
           :ok -> IO.puts("🔅 LED OFF")
           error -> IO.puts("❌ LED control failed: #{inspect(error)}")
         end
@@ -135,27 +135,27 @@ defmodule SpaceNavigator.Demo.ApiDemo do
         interactive_loop()
         
       "3" ->
-        connected = SpaceNavigator.connected?()
-        state = SpaceNavigator.connection_state()
+        connected = SpaceMouse.connected?()
+        state = SpaceMouse.connection_state()
         IO.puts("🔌 Connected: #{connected}, State: #{state}")
         check_events()
         interactive_loop()
         
       "4" ->
-        platform = SpaceNavigator.platform_info()
+        platform = SpaceMouse.platform_info()
         IO.puts("📋 Platform: #{inspect(platform)}")
         check_events()
         interactive_loop()
         
       "5" ->
-        motion = SpaceNavigator.get_motion_state()
+        motion = SpaceMouse.get_motion_state()
         IO.puts("🎯 Current motion: #{format_motion(motion)}")
         check_events()
         interactive_loop()
         
       "q" ->
         IO.puts("👋 Stopping demo...")
-        SpaceNavigator.stop_monitoring()
+        SpaceMouse.stop_monitoring()
         
       _ ->
         IO.puts("❓ Unknown command")

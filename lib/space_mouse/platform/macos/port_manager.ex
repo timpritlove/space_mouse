@@ -1,4 +1,4 @@
-defmodule SpaceNavigator.Platform.MacOS.PortManager do
+defmodule SpaceMouse.Platform.MacOS.PortManager do
   @moduledoc """
   Manages the external C HID reader process via Erlang ports.
   

@@ -1,4 +1,4 @@
-defmodule SpaceNavigator.Core.Device do
+defmodule SpaceMouse.Core.Device do
   @moduledoc """
   Main SpaceMouse device abstraction.
   
@@ -403,7 +403,7 @@ defmodule SpaceNavigator.Core.Device do
   defp select_platform do
     case :os.type() do
       {:unix, :darwin} ->
-        SpaceNavigator.Platform.MacOS.HidBridge
+        SpaceMouse.Platform.MacOS.HidBridge
         
       {:unix, :linux} ->
         # Future Linux implementation

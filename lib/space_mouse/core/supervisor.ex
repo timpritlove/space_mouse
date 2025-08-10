@@ -1,6 +1,6 @@
-defmodule SpaceNavigator.Core.Supervisor do
+defmodule SpaceMouse.Core.Supervisor do
   @moduledoc """
-  Supervisor for the SpaceNavigator core system.
+  Supervisor for the SpaceMouse core system.
   
   This supervisor manages the main device GenServer and ensures proper
   fault tolerance and recovery for the SpaceMouse communication system.
@@ -16,7 +16,7 @@ defmodule SpaceNavigator.Core.Supervisor do
   def init(opts) do
     children = [
       # Main device manager
-      {SpaceNavigator.Core.Device, opts}
+      {SpaceMouse.Core.Device, opts}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
