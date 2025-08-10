@@ -28,6 +28,8 @@ defmodule SpaceMouse.MixProject do
     ]
   end
 
+
+
   defp aliases do
     [
       "compile.native": &compile_native/1,
@@ -36,9 +38,13 @@ defmodule SpaceMouse.MixProject do
   end
 
   defp compile_native(_) do
+    # Set MIX_APP_PATH so the build script knows where to place the binary
+    app_path = Mix.Project.app_path()
+    
     case :os.type() do
       {:unix, :darwin} ->
         case System.cmd("bash", ["priv/platform/macos/build.sh"], 
+                       env: [{"MIX_APP_PATH", app_path}],
                        into: IO.stream(:stdio, :line)) do
           {_, 0} -> 
             IO.puts("Native compilation successful")
@@ -56,10 +62,13 @@ defmodule SpaceMouse.MixProject do
   end
   
   defp clean_native(_) do
-    priv_dir = "_build/#{Mix.env()}/lib/space_mouse/priv"
+    # Clean the compiled binaries from the app build directory
+    app_path = Mix.Project.app_path()
+    priv_dir = Path.join(app_path, "priv")
+    
     if File.exists?(priv_dir) do
       File.rm_rf!(priv_dir)
-      IO.puts("Cleaned native binaries")
+      IO.puts("Cleaned native binaries from: #{priv_dir}")
     end
   end
 end
