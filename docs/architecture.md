@@ -154,7 +154,7 @@ Application → Core Device → Platform → (varies by platform)
   connection_state: :connected,  # :disconnected | :connecting | :connected | :error
   subscribers: MapSet.new([pid1, pid2]),
   led_state: :on,               # :on | :off | :unknown
-  last_motion: %{x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0},  # ±350 range per axis
+  last_motion: %{x: 0.0, y: 0.0, z: 0.0, rx: 0.0, ry: 0.0, rz: 0.0},  # ±1.0 range per axis
   last_button_state: %{1 => :released, 2 => :pressed},
   auto_reconnect: true
 }
@@ -192,8 +192,9 @@ SpaceNavigator.Application
 ### Event Throughput
 - **Motion Events**: ~375 Hz maximum hardware rate, typically 250-350 Hz during movement
 - **Button Events**: As fast as user can press (hardware debounced)
+- **LED Events**: Emitted on state changes (on/off transitions)
 - **Latency**: <5ms from device to application
-- **6DOF Data**: All axes (X,Y,Z,RX,RY,RZ) in single events with ±350 value range
+- **6DOF Data**: All axes (X,Y,Z,RX,RY,RZ) in single events with ±1.0 float value range
 
 ### Memory Usage
 - **Core System**: ~1-2 MB

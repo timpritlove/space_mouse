@@ -56,6 +56,10 @@ receive do
   {:spacemouse_button, button} ->
     %{id: id, state: state} = button
     IO.puts("Button #{id}: #{state}")
+    
+  {:spacemouse_led_changed, led_change} ->
+    %{from: from, to: to} = led_change
+    IO.puts("LED changed: #{from} -> #{to}")
 end
 ```
 
@@ -199,12 +203,12 @@ SpaceNavigator.set_auto_reconnect(false)  # Disable auto-reconnect
 
 # motion_data format:
 %{
-  x: -123,     # Translation X axis (-350 to +350)
-  y: 45,       # Translation Y axis (-350 to +350)
-  z: -200,     # Translation Z axis (-350 to +350)
-  rx: 67,      # Rotation X axis (-350 to +350)
-  ry: -89,     # Rotation Y axis (-350 to +350)
-  rz: 156      # Rotation Z axis (-350 to +350)
+  x: -0.351,   # Translation X axis (-1.0 to +1.0)
+  y: 0.129,    # Translation Y axis (-1.0 to +1.0)
+  z: -0.571,   # Translation Z axis (-1.0 to +1.0)
+  rx: 0.191,   # Rotation X axis (-1.0 to +1.0)
+  ry: -0.254,  # Rotation Y axis (-1.0 to +1.0)
+  rz: 0.446    # Rotation Z axis (-1.0 to +1.0)
 }
 ```
 
@@ -227,6 +231,24 @@ SpaceNavigator.set_auto_reconnect(false)  # Disable auto-reconnect
   state: :pressed     # :pressed or :released
 }
 ```
+
+### LED Events
+
+```elixir
+{:spacemouse_led_changed, led_change}
+
+# led_change format:
+%{
+  from: :off,                    # Previous LED state (:on, :off, :unknown)
+  to: :on,                       # New LED state (:on, :off)
+  timestamp: 1640995200000       # System monotonic time in milliseconds
+}
+```
+
+**LED State Events**:
+- Emitted whenever `SpaceNavigator.set_led/1` changes the LED state
+- Only emitted on actual state changes (no event if setting same state)
+- `from` can be `:unknown` on first LED command after connection
 
 ## Usage Patterns
 
@@ -278,11 +300,11 @@ end
 
 ```elixir
 defmodule MyApp.MotionProcessor do
-  # Dead zone to filter small movements (±350 range means 5-15 is a good dead zone)
-  @dead_zone 10
+  # Dead zone to filter small movements (±1.0 range means 0.01-0.05 is a good dead zone)
+  @dead_zone 0.03
   
-  # Scaling factor for application (±350 range to ±1.0 range)
-  @scale_factor 1.0 / 350.0
+  # Optional additional scaling factor for application (values already ±1.0)
+  @scale_factor 2.0  # Example: scale ±1.0 to ±2.0 for more sensitivity
   
   def process_motion(%{x: x, y: y, z: z} = motion) do
     # Apply dead zone
@@ -302,8 +324,8 @@ defmodule MyApp.MotionProcessor do
     scaled
   end
   
-  defp apply_dead_zone(value) when abs(value) < @dead_zone, do: 0
-  defp apply_dead_zone(value), do: value
+  defp apply_dead_zone(value) when abs(value) < @dead_zone, do: 0.0
+  defp apply_dead_zone(value), do: value * @scale_factor
 end
 ```
 
@@ -518,8 +540,8 @@ def handle_info({:spacemouse_motion, motion}, state) do
 end
 
 defp significant_motion?(%{x: x, y: y, z: z}) do
-  # With ±350 range, 15-20 is a good threshold for significant motion
-  abs(x) > 15 or abs(y) > 15 or abs(z) > 15
+  # With ±1.0 range, 0.04-0.06 is a good threshold for significant motion
+  abs(x) > 0.05 or abs(y) > 0.05 or abs(z) > 0.05
 end
 ```
 

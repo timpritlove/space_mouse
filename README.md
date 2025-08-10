@@ -229,16 +229,16 @@ priv/platform/
 
 ### Motion Data Format
 
-6DOF motion data with ±350 value range:
+6DOF motion data with ±1.0 value range:
 
 ```elixir
 %{
-  x: -123,     # Translation X (-350 to +350)
-  y: 67,       # Translation Y (-350 to +350)
-  z: -200,     # Translation Z (-350 to +350)
-  rx: 45,      # Rotation X (-350 to +350)
-  ry: -89,     # Rotation Y (-350 to +350)
-  rz: 156      # Rotation Z (-350 to +350)
+  x: -0.351,   # Translation X (-1.0 to +1.0)
+  y: 0.191,    # Translation Y (-1.0 to +1.0)
+  z: -0.571,   # Translation Z (-1.0 to +1.0)
+  rx: 0.129,   # Rotation X (-1.0 to +1.0)
+  ry: -0.254,  # Rotation Y (-1.0 to +1.0)
+  rz: 0.446    # Rotation Z (-1.0 to +1.0)
 }
 ```
 
@@ -251,13 +251,23 @@ priv/platform/
 }
 ```
 
+### LED Event Format
+
+```elixir
+%{
+  from: :off,                    # Previous LED state (:on, :off, :unknown)
+  to: :on,                       # New LED state (:on, :off)
+  timestamp: 1640995200000       # System monotonic time in milliseconds
+}
+```
+
 ### Performance Characteristics
 
 - **Event Rate**: ~375 Hz maximum (motion), event-driven (buttons)
 - **Latency**: <5ms device to application
 - **CPU Usage**: <5% during active use
 - **Memory**: ~2MB total footprint
-- **Resolution**: 700 discrete steps per axis (±350 range)
+- **Resolution**: 700 discrete steps per axis (±1.0 normalized range, ±350 hardware range)
 
 ## Troubleshooting
 

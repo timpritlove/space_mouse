@@ -39,16 +39,17 @@ defmodule SpaceNavigator do
   - `{:spacemouse_disconnected, device_info}` - Device disconnected
   - `{:spacemouse_motion, motion_data}` - 6DOF motion data  
   - `{:spacemouse_button, button_data}` - Button events
+  - `{:spacemouse_led_changed, led_change}` - LED state change events
   
   ## Motion Data Format
   
       %{
-        x: integer(),   # Translation X (-32768 to 32767)
-        y: integer(),   # Translation Y
-        z: integer(),   # Translation Z  
-        rx: integer(),  # Rotation X
-        ry: integer(),  # Rotation Y
-        rz: integer()   # Rotation Z
+        x: float(),   # Translation X (-1.0 to +1.0)
+        y: float(),   # Translation Y (-1.0 to +1.0)
+        z: float(),   # Translation Z (-1.0 to +1.0)
+        rx: float(),  # Rotation X (-1.0 to +1.0)
+        ry: float(),  # Rotation Y (-1.0 to +1.0)
+        rz: float()   # Rotation Z (-1.0 to +1.0)
       }
   
   ## Platform Support

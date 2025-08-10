@@ -20,7 +20,20 @@ The SpaceMouse provides simultaneous input across six axes of movement:
 
 ## Value Ranges
 
-Based on comprehensive testing with maximum force application in all directions:
+The SpaceNavigator library automatically normalizes raw hardware values to a standardized range:
+
+### Library Output (Normalized)
+
+| Axis | Description | Minimum | Maximum | Total Range |
+|------|-------------|---------|---------|-------------|
+| **X** | Left/Right | -1.0 | +1.0 | 2.0 |
+| **Y** | Forward/Back | -1.0 | +1.0 | 2.0 |
+| **Z** | Up/Down | -1.0 | +1.0 | 2.0 |
+| **RX** | Tilt | -1.0 | +1.0 | 2.0 |
+| **RY** | Roll | -1.0 | +1.0 | 2.0 |
+| **RZ** | Twist | -1.0 | +1.0 | 2.0 |
+
+### Raw Hardware Values (Internal)
 
 | Axis | Description | Minimum | Maximum | Total Range |
 |------|-------------|---------|---------|-------------|
@@ -33,10 +46,11 @@ Based on comprehensive testing with maximum force application in all directions:
 
 ### Key Characteristics
 
-- **Data Type**: Signed 16-bit integers
-- **Neutral Position**: `0` for all axes
-- **Symmetric Range**: Approximately ±350 for all axes
-- **Resolution**: 700 discrete steps per axis (from -350 to +350)
+- **Library Data Type**: 64-bit floats (-1.0 to +1.0)
+- **Hardware Data Type**: Signed 16-bit integers (-350 to +350)
+- **Neutral Position**: `0.0` for all axes (library), `0` for hardware
+- **Scaling Factor**: `1.0 / 350.0` (hardware to library conversion)
+- **Resolution**: 700 discrete steps per axis, maintaining precision after scaling
 - **Precision**: Single-unit increments
 
 ## Event Structure
@@ -47,12 +61,12 @@ Each motion event contains a complete 6DOF state snapshot:
 
 ```elixir
 {:spacemouse_motion, %{
-  x: -125,    # Translation X: left/right
-  y: 200,     # Translation Y: forward/back  
-  z: 0,       # Translation Z: up/down
-  rx: 45,     # Rotation X: tilt
-  ry: -30,    # Rotation Y: roll
-  rz: 150     # Rotation Z: twist
+  x: -0.357,    # Translation X: left/right (was -125)
+  y: 0.571,     # Translation Y: forward/back (was 200)
+  z: 0.0,       # Translation Z: up/down (was 0)
+  rx: 0.129,    # Rotation X: tilt (was 45)
+  ry: -0.086,   # Rotation Y: roll (was -30)
+  rz: 0.429     # Rotation Z: twist (was 150)
 }}
 ```
 

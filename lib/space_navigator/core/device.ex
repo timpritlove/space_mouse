@@ -132,7 +132,7 @@ defmodule SpaceNavigator.Core.Device do
           connection_state: :disconnected,
           subscribers: MapSet.new(),
           led_state: :unknown,
-          last_motion: %{x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0},
+          last_motion: %{x: 0.0, y: 0.0, z: 0.0, rx: 0.0, ry: 0.0, rz: 0.0},
           last_button_state: %{},
           auto_reconnect: auto_reconnect
         }
@@ -190,6 +190,17 @@ defmodule SpaceNavigator.Core.Device do
   def handle_call({:set_led, led_state}, _from, state) do
     case state.platform_module.send_led_command(state.platform_state, led_state) do
       {:ok, new_platform_state} ->
+        # Check if LED state actually changed
+        if state.led_state != led_state do
+          # Emit LED state change event
+          led_event = {:spacemouse_led_changed, %{
+            from: state.led_state,
+            to: led_state,
+            timestamp: System.monotonic_time(:millisecond)
+          }}
+          broadcast_to_subscribers(state.subscribers, led_event)
+        end
+        
         new_state = %{state | led_state: led_state, platform_state: new_platform_state}
         {:reply, :ok, new_state}
         
@@ -265,11 +276,14 @@ defmodule SpaceNavigator.Core.Device do
 
   @impl true
   def handle_info({:hid_event, %{type: :motion, data: motion_data}}, state) do
-    # Update last motion state
-    new_motion = Map.merge(state.last_motion, motion_data)
+    # Scale motion values from ±350 integer range to ±1.0 float range
+    scaled_motion_data = scale_motion_values(motion_data)
+    
+    # Update last motion state with scaled values
+    new_motion = Map.merge(state.last_motion, scaled_motion_data)
     new_state = %{state | last_motion: new_motion}
     
-    # Notify subscribers
+    # Notify subscribers with scaled values
     message = {:spacemouse_motion, new_motion}
     broadcast_to_subscribers(state.subscribers, message)
     
@@ -422,5 +436,19 @@ defmodule SpaceNavigator.Core.Device do
     Enum.each(subscribers, fn pid ->
       send(pid, message)
     end)
+  end
+
+  # Scale motion values from ±350 integer range to ±1.0 float range
+  defp scale_motion_values(motion_data) do
+    # Hardware range is ±350, scale to ±1.0
+    scale_factor = 1.0 / 350.0
+    
+    motion_data
+    |> Enum.map(fn {axis, value} ->
+      # Convert integer to float and scale
+      scaled_value = value * scale_factor
+      {axis, scaled_value}
+    end)
+    |> Enum.into(%{})
   end
 end
